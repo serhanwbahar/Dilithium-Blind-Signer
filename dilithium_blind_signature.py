@@ -5,7 +5,6 @@ from secrets import randbelow
 from pqcrypto.sign import dilithium3
 from cryptography.hazmat.primitives import constant_time
 
-
 class DilithiumBlindSignature:
     """
     A class for handling Dilithium blind signature operations.
@@ -13,9 +12,10 @@ class DilithiumBlindSignature:
 
     @staticmethod
     def hash_message(message: str) -> bytes:
-        with hashlib.blake2s() as hasher:
-            hasher.update(message.encode('utf-8'))
-            return hasher.digest()
+        # Corrected: Use hashlib.blake2s directly without 'with'
+        hasher = hashlib.blake2s()
+        hasher.update(message.encode('utf-8'))
+        return hasher.digest()
 
     @staticmethod
     def int_to_bytes(value: int, byteorder='big') -> bytes:
@@ -49,9 +49,9 @@ class DilithiumBlindSignature:
     @staticmethod
     def verify(public_key: bytes, signature: bytes, message: str) -> bool:
         message_hash = DilithiumBlindSignature.hash_message(message)
+        # Corrected: Use dilithium3.verify for signature verification
         try:
-            expected_signature = dilithium3.sign(public_key, message_hash)
-            return constant_time.bytes_eq(signature, expected_signature)
+            return dilithium3.verify(public_key, signature, message_hash)
         except ValueError:
             return False
 
@@ -89,4 +89,5 @@ class DigitalPayment:
     def verify_payment_request(self, payment_request: Dict[str, str], signature: str, public_key: bytes) -> bool:
         payment_request_json = json.dumps(payment_request, sort_keys=True)
         signature_bytes = bytes.fromhex(signature)
-        return DilithiumBlindSignature.verify(public_key, signature_bytes, payment_request_json)
+        # Ensure the message passed for verification is encoded
+        return DilithiumBlindSignature.verify(public_key, signature_bytes, payment_request_json.encode('utf-8'))
