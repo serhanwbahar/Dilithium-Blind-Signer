@@ -1,6 +1,6 @@
 # Experimental Dilithium Blind Signature Library for Digital Payments
 
-This experimental library provides a secure implementation of blind signatures using the Dilithium post-quantum digital signature scheme. It is designed for use in digital payment systems, where preserving payer privacy is crucial.
+This experimental library provides a secure implementation of blind signatures using the Dilithium post-quantum digital signature scheme. It is designed for use in digital payment systems, where preserving payer privacy is crucial. Please note that this experiment is designed to show blind signatures are not compatible with post quantum (lattice-based) algorithms.
 
 ## Overview
 
